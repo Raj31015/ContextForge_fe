@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     // 1️⃣ Create signed URL (file MUST exist)
     const { data, error } = await supabase.storage
-      .from("documents")
+      .from("ContextForge")
       .createSignedUrl(path, 600)
 
     console.log("SIGNED URL DATA:", data)

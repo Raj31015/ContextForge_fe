@@ -36,6 +36,7 @@ export function PDFUpload({ onUploadSuccess }: PDFUploadProps) {
 
       try {
         const {docId,filename}=await uploadPdf(file)
+        console.log(docId,filename)
         await ingestDocument(docId,filename)
         toast({
           title: "Upload successful",

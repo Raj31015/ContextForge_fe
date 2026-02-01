@@ -7,7 +7,7 @@ import { AnswerDisplay } from "@/components/answer-display";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { FileText } from "lucide-react";
-
+import { queryRag } from "@/features/document/querydoc";
 export default function Home() {
   const [answer, setAnswer] = useState<string | null>(null);
   const [currentQuery, setCurrentQuery] = useState<string | null>(null);
@@ -36,20 +36,10 @@ export default function Home() {
     setAnswer(null);
 
     try {
-      const response = await fetch("/api/query", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Query failed");
-      }
-
-      const data = await response.json();
-      setAnswer(data.answer || "No answer generated.");
+      const data =await queryRag({
+        question:query
+      })
+      setAnswer(data.answer || "No answer generated")
     } catch (error) {
       toast({
         title: "Query failed",

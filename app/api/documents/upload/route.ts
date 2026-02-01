@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         { status: 500 }
       )
     }
-
+    else{console.log("success")}
     return NextResponse.json({
       status: "uploaded",
       docId,
