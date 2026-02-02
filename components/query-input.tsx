@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 interface QueryInputProps {
   onQuerySubmit: (query: string) => Promise<void>;
   isLoading?: boolean;
-  disabled?: boolean;
+  disabled?: boolean; // true when PDFs are uploading
 }
 
 export function QueryInput({
@@ -32,13 +32,14 @@ export function QueryInput({
       <CardHeader>
         <CardTitle>Ask a Question</CardTitle>
       </CardHeader>
+
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Textarea
             placeholder="Enter your question about the uploaded document..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            disabled={isLoading || disabled}
+            disabled={isLoading} // ✅ FIX: typing allowed while uploading
             className="min-h-[100px] resize-none"
             onKeyDown={(e) => {
               if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -46,10 +47,11 @@ export function QueryInput({
               }
             }}
           />
+
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={!query.trim() || isLoading || disabled}
+              disabled={!query.trim() || isLoading || disabled} // ✅ correct
             >
               {isLoading ? (
                 <>

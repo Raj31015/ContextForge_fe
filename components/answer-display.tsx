@@ -7,10 +7,14 @@ interface AnswerDisplayProps {
   answer: string | null;
   isLoading?: boolean;
   query?: string | null;
+  context?:string ;
+  citations?:string[]
 }
 
 export function AnswerDisplay({
   answer,
+  citations,
+  context,
   isLoading = false,
   query,
 }: AnswerDisplayProps) {
@@ -69,6 +73,27 @@ export function AnswerDisplay({
       <CardContent>
         <div className="prose prose-sm max-w-none dark:prose-invert">
           <p className="whitespace-pre-wrap leading-relaxed">{answer}</p>
+                    {citations && citations.length > 0 && (
+            <div className="mt-4 text-sm text-muted-foreground">
+              <p className="font-medium">Sources</p>
+              <ul className="list-disc ml-5 space-y-1">
+                {citations.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {context && (
+            <details className="mt-6 border-t pt-4">
+              <summary className="cursor-pointer text-sm font-medium text-muted-foreground">
+                Retrieved context
+              </summary>
+              <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground">
+                {context}
+              </p>
+            </details>
+          )}
+      
         </div>
       </CardContent>
     </Card>

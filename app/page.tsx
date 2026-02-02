@@ -8,17 +8,24 @@ import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import { FileText } from "lucide-react";
 import { queryRag } from "@/features/document/querydoc";
+
 export default function Home() {
   const [answer, setAnswer] = useState<string | null>(null);
+  const [context, setContext] = useState<string>("");
+  const [citation, setCitations] = useState<string[]>([]);
   const [currentQuery, setCurrentQuery] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasDocument, setHasDocument] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); // ✅ NEW
+
   const { toast } = useToast();
 
   const handleUploadSuccess = () => {
     setHasDocument(true);
     setAnswer(null);
     setCurrentQuery(null);
+    setContext("");
+    setCitations([]);
   };
 
   const handleQuerySubmit = async (query: string) => {
@@ -34,13 +41,15 @@ export default function Home() {
     setIsLoading(true);
     setCurrentQuery(query);
     setAnswer(null);
+    setContext("");
+    setCitations([]);
 
     try {
-      const data =await queryRag({
-        question:query
-      })
-      setAnswer(data.answer || "No answer generated")
-    } catch (error) {
+      const data = await queryRag({ question: query });
+      setAnswer(data.answer || "No answer generated");
+      setContext(data.context);
+      setCitations(data.citations);
+    } catch {
       toast({
         title: "Query failed",
         description: "Failed to process your question. Please try again.",
@@ -68,18 +77,23 @@ export default function Home() {
         </div>
 
         <div className="space-y-6">
-          <PDFUpload onUploadSuccess={handleUploadSuccess} />
+          <PDFUpload
+            onUploadSuccess={handleUploadSuccess}
+            onUploadingChange={setIsUploading} // ✅ KEY WIRING
+          />
 
           <QueryInput
             onQuerySubmit={handleQuerySubmit}
             isLoading={isLoading}
-            disabled={!hasDocument}
+            disabled={!hasDocument || isUploading} // ✅ GPT-style behavior
           />
 
           <AnswerDisplay
             answer={answer}
             isLoading={isLoading}
             query={currentQuery}
+            context={context}
+            citations={citation}
           />
         </div>
       </div>

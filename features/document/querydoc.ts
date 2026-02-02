@@ -1,3 +1,4 @@
+
 export interface QueryRequest {
   question: string
   doc_ids?: string[]
@@ -5,7 +6,8 @@ export interface QueryRequest {
 
 export interface QueryResponse {
   answer: string
-  sources: string[]
+  citations: string[]
+  context:string
 }
 
 /**
