@@ -1,19 +1,19 @@
-/**
- * Upload a PDF via Next.js API
- */
+import { supabase } from "@/lib/supabase"
+
 export async function uploadPdf(file: File) {
-  const formData = new FormData()
-  formData.append("file", file)
+  const docId = crypto.randomUUID()
+  const path = `pdfs/${docId}.pdf`
 
-  const res = await fetch("/api/documents/upload", {
-    method: "POST",
-    body: formData
-  })
+  const { error } = await supabase.storage
+    .from("ContextForge")
+    .upload(path, file)
 
-    if (!res.ok) {
-    const text = await res.text()
-    throw new Error(text || `HTTP ${res.status}`)
+  if (error) {
+    throw new Error(error.message)
   }
-  return res.json()
-}
 
+  return {
+    docId,
+    filename: file.name
+  }
+}

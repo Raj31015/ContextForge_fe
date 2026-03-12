@@ -98,7 +98,9 @@ export function PDFUpload({
           setUploads((prev) =>
             prev.map((u) =>
               u.file === item.file ? { ...u, status: "error" } : u
+               
             )
+          
           );
         }
       }
